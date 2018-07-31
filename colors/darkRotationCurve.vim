@@ -14,7 +14,7 @@ let s:red           = '1'
 let s:lime          = '10'
 let s:yellow        = '11'
 let s:blue          = '6'
-let s:aqua          = '39'
+let s:cyan          = '39'
 let s:orange        = '172'
 let s:darkyellow    = '172'
 let s:darkred       = '88'
@@ -22,6 +22,34 @@ let s:cColumnGrey   = '18'
 let s:cColumnGreyBg = '236'
 let s:lightgrey     = '253'
 let s:lightblue     = '81'
+let s:lightred      = '216'
+let s:default       = '222'
+
+
+" ========================================================================
+" FLAGS FOR FILETYPE
+" ========================================================================
+let s:isPython='0'
+let s:isText='0'
+let s:isTex='0'
+let s:isCpp='0'
+
+if expand("%:e") == "text"
+   let s:isText=1
+endif
+
+if expand("%:e") == "tex"
+   let s:isTex=1
+endif
+
+if expand("%:e") == "python"
+   let s:isPython=1
+endif
+
+if expand("%:e") == "cpp"
+   let s:isCpp=1
+endif
+
 
 " ========================================================================
 " SET UP FOR COLORSCHEME
@@ -39,6 +67,33 @@ fun <sid>highlight(group, ctermfg, ctermbg)
 	endif
 endfun
 
+fun <sid>underline(group, ctermfg, ctermbg, underline)
+	if a:underline == "on"
+	  exec "hi " . a:group . " cterm=undercurl ctermbg=NONE"
+	endif
+	if a:ctermfg != ""
+    exec "hi " . a:group . " ctermfg=" . a:ctermfg
+	endif
+	if a:ctermbg != ""
+    exec "hi " . a:group . " ctermbg=" . a:ctermbg
+	endif
+endfun
+
+" ========================================================================
+" SPELLING COLORS
+" ========================================================================
+let s:cSpell            = s:default
+" if text editing, turn on agressive coloring
+if s:isText == '1' || s:isTex == '1'
+  let s:cSpell          = s:red
+endif
+
+call <sid>underline("SpellBad", s:cSpell, "", "on")
+call <sid>underline("SpellLocal", s:cSpell, "", "on")
+call <sid>underline("SpellCap", s:cSpell, "", "on")
+call <sid>underline("SpellRare", s:cSpell, "", "on")
+
+
 " ========================================================================
 " VISUAL SELECTION 
 " ========================================================================
@@ -50,7 +105,7 @@ hi CursorLine cterm=NONE guibg=Grey40
 " GENERAL
 " ========================================================================
 let s:cTypedef         = '1'
-let s:cType            = s:aqua " double
+let s:cType            = s:cyan " double
 let s:cTodo            = s:yellow
 let s:cTag             = '1'
 let s:cStructure       = s:orange " namespace
@@ -71,7 +126,7 @@ let s:cNumber          = s:darkred
 let s:cFloat           = s:darkred
 let s:cDelimiter       = s:grey " () in vim
 let s:cDefine          = '1'
-let s:cConstant        = s:aqua " true,
+let s:cConstant        = s:cyan " true,
 let s:cConditional     = s:orange
 let s:cComment         = s:grey
 let s:cCharacter       = s:green
@@ -122,33 +177,57 @@ call <sid>highlight("PmenuSel",s:cColumnGreyBg, s:lightgrey )
 " ========================================================================
 " PYTHON SPECIFIC
 " ========================================================================
-let s:cPythonBool      = s:lightblue
-let s:cPythonOperator  = s:orange
-let s:cPythonFunction  = s:lightblue
-"
-syn keyword PythonOppExt as
-call <sid>highlight("PythonOppExt",   s:cPythonOperator,   "")
-syn keyword PythonBool False True None Self
-call <sid>highlight("PythonBool",   s:cPythonBool,         "")
-call <sid>highlight("pythonFunction",   s:cPythonFunction, "")
-call <sid>highlight("pythonOperator",   s:cPythonOperator, "") " not, in
-call <sid>highlight("pythonRepeat",     s:cPythonOperator, "") " for
+if s:isPython == '1'
+  let s:cPythonBool      = s:lightblue
+  let s:cPythonOperator  = s:orange
+  let s:cPythonFunction  = s:lightblue
+  "
+  syn keyword PythonOppExt as
+  call <sid>highlight("PythonOppExt",   s:cPythonOperator,   "")
+  syn keyword PythonBool False True None Self
+  call <sid>highlight("PythonBool",   s:cPythonBool,         "")
+  call <sid>highlight("pythonFunction",   s:cPythonFunction, "")
+  call <sid>highlight("pythonOperator",   s:cPythonOperator, "") " not, in
+  call <sid>highlight("pythonRepeat",     s:cPythonOperator, "") " for
+  unlet s:cPythonBool s:cPythonOperator s:cPythonFunction 
+endif
+" ========================================================================
+
+" ========================================================================
+" LATEX SPECIFIC
+" ========================================================================
+if s:isTex == '1'
+  let s:cPreproc         = s:orange " things in {}
+  let s:cStatement       = s:lightblue " begin, end, item
+  let s:cNumber          = s:orange " things in []
+  call <sid>highlight("Statement",   s:cStatement,"")
+  call <sid>highlight("PreProc",   s:cPreproc,"")
+  call <sid>highlight("Number",   s:cNumber,"")
+endif
 " ========================================================================
 
 " ========================================================================
 " CPP SPECIFIC
 " ========================================================================
-let s:cCppNew          = s:yellow
-let s:cCppUsing        = s:yellow
-"
-syn keyword CppNew new
-call <sid>highlight("CppNew",   s:cCppNew,    "")
-syn keyword CppUsing using
-call <sid>highlight("CppUsing",   s:cCppUsing,"")
+if s:isCpp == '1'
+  let s:cCppNew          = s:yellow
+  let s:cCppUsing        = s:yellow
+  "
+  syn keyword CppNew new
+  call <sid>highlight("CppNew",   s:cCppNew,    "")
+  syn keyword CppUsing using
+  call <sid>highlight("CppUsing",   s:cCppUsing,"")
+  unlet s:cCppNew s:cCppUsing
+endif
 " ========================================================================
 
 " remove highlight function
 delf <sid>highlight
+delf <sid>underline
 
 " remove variables
-unlet s:black s:green s:olive s:purple s:grey s:red s:lime s:yellow s:blue s:aqua s:orange s:darkyellow s:darkred s:cColumnGrey s:cColumnGreyBg s:cTypedef s:cType s:cTodo s:cTag s:cStructure s:cString s:cStorageclass s:cStatement s:cSpecialchar s:cSpecial s:cRepeat s:cPreproc s:cOperator s:cNumber s:cLabel s:cKeyword s:cInclude s:cIdentifier s:cFunction s:cFloat s:cDelimiter s:cDefine s:cConstant s:cConditional s:cComment s:cCharacter s:cSearch s:cSearchBg s:cPythonBool s:cPythonOperator s:cPythonFunction s:cCppNew s:cCppUsing
+unlet s:black s:green s:olive s:purple s:grey s:red s:lime s:yellow s:blue s:cyan s:orange s:darkyellow s:darkred s:cColumnGrey s:cColumnGreyBg s:cTypedef s:cType s:cTodo s:cTag s:cStructure s:cString s:cStorageclass s:cStatement s:cSpecialchar s:cSpecial s:cRepeat s:cPreproc s:cOperator s:cNumber s:cLabel s:cKeyword s:cInclude s:cIdentifier s:cFunction s:cFloat s:cDelimiter s:cDefine s:cConstant s:cConditional s:cComment s:cCharacter s:cSearch s:cSearchBg
+unlet s:isPython
+unlet s:isText
+unlet s:isTex
+unlet s:isCpp
