@@ -24,6 +24,7 @@ let s:lightgrey     = '253'
 let s:lightblue     = '81'
 let s:lightred      = '216'
 let s:default       = '222'
+let s:darkgrey      = '238'
 
 
 " ========================================================================
@@ -34,19 +35,23 @@ let s:isText='0'
 let s:isTex='0'
 let s:isCpp='0'
 
-if expand("%:e") == "text"
-   let s:isText=1
-endif
-
-if expand("%:e") == "tex"
+if &filetype == "tex"
    let s:isTex=1
 endif
 
-if expand("%:e") == "python"
+if &filetype == "text"
+   let s:isText=1
+endif
+
+if &filetype == "tex"
+   let s:isTex=1
+endif
+
+if &filetype == "python"
    let s:isPython=1
 endif
 
-if expand("%:e") == "cpp"
+if &filetype == "cpp"
    let s:isCpp=1
 endif
 
@@ -87,11 +92,10 @@ let s:cSpell            = s:default
 if s:isText == '1' || s:isTex == '1'
   let s:cSpell          = s:red
 endif
-
-call <sid>underline("SpellBad", s:cSpell, "", "on")
+call <sid>underline("SpellBad",   s:cSpell, "", "on")
 call <sid>underline("SpellLocal", s:cSpell, "", "on")
-call <sid>underline("SpellCap", s:cSpell, "", "on")
-call <sid>underline("SpellRare", s:cSpell, "", "on")
+call <sid>underline("SpellCap",   s:cSpell, "", "on")
+call <sid>underline("SpellRare",  s:cSpell, "", "on")
 
 
 " ========================================================================
@@ -116,7 +120,7 @@ let s:cSpecialchar     = '1'
 let s:cSpecial         = s:grey " something in vim
 let s:cRepeat          = '1'
 let s:cPreproc         = '1'
-let s:cOperator        = s:grey " = in vim
+let s:cOperator        = s:lightgrey " = in vim
 let s:cLabel           = '1'
 let s:cKeyword         = '1'
 let s:cInclude         = s:orange "include
@@ -124,7 +128,7 @@ let s:cIdentifier      = s:lightblue " vim labels
 let s:cFunction        = s:blue " abs, len, reduce
 let s:cNumber          = s:darkred
 let s:cFloat           = s:darkred
-let s:cDelimiter       = s:grey " () in vim
+let s:cDelimiter       = s:lightgrey " () in vim
 let s:cDefine          = '1'
 let s:cConstant        = s:cyan " true,
 let s:cConditional     = s:orange
@@ -134,7 +138,11 @@ let s:cSearch          = s:black
 let s:cSearchBg        = s:purple
 let s:cLineNumber      = s:grey
 let s:cCurLineNumber   = s:lightgrey
+let s:cNonText         = s:darkgrey
+let s:cSpecialKey      = s:darkgrey
 "
+call <sid>highlight("NoneText",     s:cNonText     , "") "listchars
+call <sid>highlight("SpecialKey",   s:cSpecialKey  , "")
 call <sid>highlight("Search",       s:cSearch      , s:cSearchBg)
 call <sid>highlight("Character",    s:cCharacter   , "")
 call <sid>highlight("Comment",      s:cComment     , "")
