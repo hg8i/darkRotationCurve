@@ -26,6 +26,11 @@ let s:lightred      = '216'
 let s:default       = '222'
 let s:darkgrey      = '238'
 
+" ========================================================================
+" COLORING FOR SPACE INDENTATION
+" ========================================================================
+" highlight WhiteSpaceBol ctermbg=1
+" match WhiteSpaceBol /^ \+/
 
 " ========================================================================
 " FLAGS FOR FILETYPE
@@ -167,7 +172,7 @@ call <sid>highlight("StorageClass", s:cStorageclass, "")
 call <sid>highlight("String",       s:cString      , "")
 call <sid>highlight("Structure",    s:cStructure   , "")
 call <sid>highlight("Tag",          s:cTag         , "")
-call <sid>highlight("Todo",         s:cTodo        , "")
+call <sid>highlight("Todo",         s:cTodo        , s:black)
 call <sid>highlight("Type",         s:cType        , "")
 call <sid>highlight("Typedef",      s:cTypedef     , "")
 " cursor
@@ -229,6 +234,15 @@ if s:isCpp == '1'
 endif
 " ========================================================================
 
+" set listchars=space:.
+" call <sid>highlight("WhiteSpaceBol", '1', s:lightblue)
+" call <sid>highlight("WhiteSpaceQol", '2', s:lightblue)
+" " match WhiteSpaceMol / /
+" match WhiteSpaceBol /^   /
+" 2match WhiteSpaceQol /\* /
+" " match WhiteSpaceBol /^ \+/
+
+
 " remove highlight function
 delf <sid>highlight
 delf <sid>underline
@@ -239,3 +253,4 @@ unlet s:isPython
 unlet s:isText
 unlet s:isTex
 unlet s:isCpp
+
